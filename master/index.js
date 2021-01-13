@@ -1,5 +1,6 @@
 module.exports = Master;
-
+const NATS = require('nats')
+const nc = NATS.connect()
 /*
  * Master class (runs as mesh component)
  *
@@ -40,8 +41,9 @@ Master.prototype.start = function($happn, callback) {
  */
 
 Master.prototype.stop = function($happn, callback) {
-//Agent.proto...
   $happn.log.info('stopping master component');
+  // Close connection
+  nc.close()
   callback();
 }
 
@@ -70,3 +72,11 @@ Master.prototype.reportMetric = function($happn, hostname, metric, callback) {
 
   callback();
 }
+
+// Simple Publisher
+nc.publish('foo', 'Hello World!')
+
+// Simple Subscriber
+nc.subscribe('foo', function (msg) {
+  console.log('Received a message: ' + msg)
+})
