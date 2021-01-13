@@ -63,20 +63,17 @@ Master.prototype.reportMetric = function($happn, hostname, metric, callback) {
   var eventKey = 'metrics/' + hostname + '/' + metric.key;
   var eventData = metric;
 
-  $happn.log.debug("emitting '%s': '%j'", eventKey, eventData);
   console.log("Packet received")
   console.log("Event Key: ", eventKey)
   console.log("Data")
   console.log(eventData)
-  $happn.emit(eventKey, eventData);
+  console.log("Emmitting packets to NATS Mesh")
 
+  nc.publish('foo', eventData.toString())
   callback();
 }
 
-// Simple Publisher
-nc.publish('foo', 'Hello World!')
-
 // Simple Subscriber
 nc.subscribe('foo', function (msg) {
-  console.log('Received a message: ' + msg)
+  console.info('[NATS INFO] - Recieved data :' + msg)
 })
